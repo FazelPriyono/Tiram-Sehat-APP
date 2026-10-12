@@ -98,25 +98,35 @@ class _InsetShadowPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    if (size.width <= 0 || size.height <= 0) return;
+
     final rect = Offset.zero & size;
     final rrect = RRect.fromRectAndRadius(rect, Radius.circular(radius));
 
     final darkPaint = Paint()
-      ..color = const Color(0x4D96A896)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+      ..color = const Color(0x38829482)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+
     final lightPaint = Paint()
-      ..color = const Color(0xCCFFFFFF)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+      ..color = const Color(0xE6FFFFFF)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5);
+
+    final outerRect = rect.inflate(24);
+    final holePath = Path()
+      ..fillType = PathFillType.evenOdd
+      ..addRect(outerRect)
+      ..addRRect(rrect);
 
     canvas.save();
     canvas.clipRRect(rrect);
-    canvas.drawRRect(rrect.shift(const Offset(4, 4)), darkPaint);
-    canvas.drawRRect(rrect.shift(const Offset(-4, -4)), lightPaint);
+    canvas.drawPath(holePath.shift(const Offset(3, 3)), darkPaint);
+    canvas.drawPath(holePath.shift(const Offset(-3, -3)), lightPaint);
     canvas.restore();
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _InsetShadowPainter oldDelegate) =>
+      oldDelegate.radius != radius;
 }
 
 enum NeuVariant { raised, inset, flat }
