@@ -46,3 +46,10 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Agent
+.agent/
+
+# Markdown files (except README.md)
+*.md
+!README.md
