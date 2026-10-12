@@ -194,4 +194,84 @@ class MockData {
       category: HistorySectionCategory.archived,
     ),
   ];
+
+  static const report = ReportData(
+    todayKg: 24.5,
+    deltaKg: 4.2,
+    deltaPct: 18.0,
+    salesToday: 367500,
+    pricePerKg: 15000,
+    success: 0.894,
+    totalBaglog: 2400,
+    healthy: 2146,
+    contaminated: 254,
+    trend: [82.0, 85.0, 88.0, 89.4],
+    trendDelta: 7.4,
+    monthIncome: 8420000,
+    monthKg: 561.3,
+    monthLoss: 420000,
+    lossReducedPct: 65,
+    batch: BatchData(
+      code: 'Batch Panen K-04 Margomulyo',
+      variety: 'Florida Putih',
+      day: 42,
+      grade: '98% Grade A',
+      weighedAt: '07:30 WIB',
+    ),
+  );
 }
+
+class BatchData {
+  final String code;
+  final String variety;
+  final int day;
+  final String grade;
+  final String weighedAt;
+
+  const BatchData({
+    required this.code,
+    required this.variety,
+    required this.day,
+    required this.grade,
+    required this.weighedAt,
+  });
+}
+
+class ReportData {
+  final double todayKg;
+  final double deltaKg;
+  final double deltaPct;
+  final int salesToday;
+  final int pricePerKg;
+  final double success;
+  final int totalBaglog;
+  final int healthy;
+  final int contaminated;
+  final List<double> trend;
+  final double trendDelta;
+  final int monthIncome;
+  final double monthKg;
+  final int monthLoss;
+  final int lossReducedPct;
+  final BatchData batch;
+
+  const ReportData({
+    required this.todayKg,
+    required this.deltaKg,
+    required this.deltaPct,
+    required this.salesToday,
+    required this.pricePerKg,
+    required this.success,
+    required this.totalBaglog,
+    required this.healthy,
+    required this.contaminated,
+    required this.trend,
+    required this.trendDelta,
+    required this.monthIncome,
+    required this.monthKg,
+    required this.monthLoss,
+    required this.lossReducedPct,
+    required this.batch,
+  });
+}
+
