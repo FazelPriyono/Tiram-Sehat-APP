@@ -4,13 +4,10 @@ import '../../core/theme/tokens.dart';
 import '../../core/components/app_header.dart';
 import '../../core/components/bottom_nav.dart';
 import '../home/home_screen.dart';
-<<<<<<< HEAD
 import '../scan/scan_screen.dart';
-=======
 import '../harvest/harvest_screen.dart';
 import '../history/history_screen.dart';
 import '../report/report_screen.dart';
->>>>>>> Dev
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});

@@ -39,7 +39,6 @@ class SelfCheckData {
   const SelfCheckData({required this.checked, required this.target});
 }
 
-<<<<<<< HEAD
 class ScanStep {
   final String title;
   final String description;
@@ -73,7 +72,8 @@ class ScanResult {
     required this.column,
     required this.scannedAt,
   });
-=======
+}
+
 enum HistorySectionCategory {
   actionRequired,
   recovered,
@@ -112,7 +112,6 @@ class HistoryItem {
   });
 
   String get rackLocation => '$rack • Kolom $col';
->>>>>>> Dev
 }
 
 class MockData {
@@ -134,7 +133,6 @@ class MockData {
 
   static const selfCheck = SelfCheckData(checked: 80, target: 100);
 
-<<<<<<< HEAD
   static const scanResult = ScanResult(
     id: 'scan-0001',
     diagnosisName: 'Green Mold',
@@ -167,7 +165,8 @@ class MockData {
     rack: 'Rak Kumbung B-04',
     column: 3,
     scannedAt: 'Hari ini, 09:15',
-=======
+  );
+
   static const List<HistoryItem> historyList = [
     // 1. Perlu Tindakan
     HistoryItem(
@@ -288,7 +287,6 @@ class MockData {
       grade: '98% Grade A',
       weighedAt: '07:30 WIB',
     ),
->>>>>>> Dev
   );
 }
 
