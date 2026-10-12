@@ -3,10 +3,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/components/neu_surface.dart';
 import '../../core/components/section_card.dart';
-import '../../core/components/metric_tile.dart';
-import '../../core/components/app_progress_bar.dart';
-import '../../core/components/info_note.dart';
-import '../../core/format/format_helper.dart';
 import '../../mock/mock_data.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,34 +13,29 @@ class HomeScreen extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.fromLTRB(
         AppSpacing.pagePaddingX,
-        AppSpacing.s4,
+        AppSpacing.s2,
         AppSpacing.pagePaddingX,
-        96,
+        110,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _HomeHeader(),
-          const SizedBox(height: AppSpacing.sectionGap),
-          _OfflinePill(),
-          const SizedBox(height: AppSpacing.sectionGap),
+        children: const [
+          _HomeGreetingHeader(),
+          SizedBox(height: AppSpacing.sectionGap),
           _IncomeCard(),
-          const SizedBox(height: AppSpacing.sectionGap),
+          SizedBox(height: AppSpacing.sectionGap),
           _BaglogCard(),
-          const SizedBox(height: AppSpacing.sectionGap),
+          SizedBox(height: AppSpacing.sectionGap),
           _SelfCheckCard(),
-          const SizedBox(height: AppSpacing.s4),
-          const InfoNote(
-            icon: Icons.cloud_off_rounded,
-            text: 'Semua catatan tersimpan di memori perangkat ini',
-          ),
         ],
       ),
     );
   }
 }
 
-class _HomeHeader extends StatelessWidget {
+class _HomeGreetingHeader extends StatelessWidget {
+  const _HomeGreetingHeader();
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -57,16 +48,16 @@ class _HomeHeader extends StatelessWidget {
               Text(
                 'Selamat Pagi, Petani BUMDes',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.w400,
                   color: AppColors.textSecondary,
                 ),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 3),
               Text(
                 'Kumbung Blok A',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 28,
+                  fontSize: 26,
                   fontWeight: FontWeight.w700,
                   color: AppColors.textPrimary,
                 ),
@@ -74,18 +65,18 @@ class _HomeHeader extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          width: 48,
-          height: 48,
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(AppRadius.tile),
-            boxShadow: AppShadows.raisedSm,
-          ),
-          child: const Icon(
-            Icons.eco_rounded,
-            color: AppColors.primary600,
-            size: 24,
+        NeuSurface(
+          variant: NeuVariant.raised,
+          radius: 18,
+          child: Container(
+            width: 48,
+            height: 48,
+            alignment: Alignment.center,
+            child: const Icon(
+              Icons.yard_rounded,
+              color: AppColors.primary800,
+              size: 26,
+            ),
           ),
         ),
       ],
@@ -93,53 +84,17 @@ class _HomeHeader extends StatelessWidget {
   }
 }
 
-class _OfflinePill extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-        boxShadow: AppShadows.raisedSm,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              color: AppColors.primary600,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            'Offline-Ready • Model Vision On-Device Aktif',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: AppColors.primary800,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _IncomeCard extends StatelessWidget {
+  const _IncomeCard();
+
   @override
   Widget build(BuildContext context) {
     final harvest = MockData.harvestLast;
 
     return SectionCard(
-      icon: Icons.payments_rounded,
+      icon: Icons.payments_outlined,
       title: 'Estimasi Pendapatan Panen',
-      trailing: _SmallChip(label: 'Buku Panen', onTap: () {}),
       children: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           NeuSurface(
             variant: NeuVariant.inset,
@@ -154,36 +109,53 @@ class _IncomeCard extends StatelessWidget {
                       Text(
                         'ESTIMASI PANEN HARI INI',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: FontWeight.w700,
-                          letterSpacing: 0.04 * 12,
+                          letterSpacing: 0.04 * 11,
                           color: AppColors.textMuted,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.s2),
-                      Text(
-                        FormatHelper.rupiah(harvest.grossIncome),
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 36,
-                          height: 1.1,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.primary800,
+                      const SizedBox(height: 6),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Rp 277.500',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 34,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.primary800,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary100,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Icon(
-                    Icons.savings_rounded,
-                    color: AppColors.primary800,
-                    size: 26,
+                NeuSurface(
+                  variant: NeuVariant.raised,
+                  radius: 16,
+                  child: Container(
+                    width: 46,
+                    height: 46,
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: const BoxDecoration(
+                        color: AppColors.primary800,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Center(
+                        child: Text(
+                          r'$',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -193,24 +165,110 @@ class _IncomeCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: MetricTile(
-                  label: 'Berat Panen Terakhir',
-                  value: '18,5',
-                  unit: 'Kg',
-                  tone: MetricTileTone.success,
+                child: NeuSurface(
                   variant: NeuVariant.raised,
-                  size: MetricSize.md,
+                  radius: AppRadius.tile,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Berat Panen Terakhir',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              '18,5',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primary800,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Kg',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(width: AppSpacing.s3),
               Expanded(
-                child: MetricTile(
-                  label: 'Harga Jual Rata-rata',
-                  value: 'Rp 15.000',
-                  unit: '/Kg',
-                  tone: MetricTileTone.defaultTone,
+                child: NeuSurface(
                   variant: NeuVariant.raised,
-                  size: MetricSize.md,
+                  radius: AppRadius.tile,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Harga Jual Rata-rata',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.textSecondary,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 6),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              'Rp 15.000',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primary800,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '/Kg',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -225,25 +283,30 @@ class _IncomeCard extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.schedule_rounded, size: 16, color: AppColors.textMuted),
-                const SizedBox(width: AppSpacing.s2),
+                const Icon(
+                  Icons.access_time_rounded,
+                  size: 20,
+                  color: AppColors.primary800,
+                ),
+                const SizedBox(width: AppSpacing.s3),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Hasil Panen Terakhir:',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w400,
-                        color: AppColors.textMuted,
+                        color: AppColors.textSecondary,
                       ),
                     ),
+                    const SizedBox(height: 2),
                     Text(
                       harvest.date,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.textPrimary,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary800,
                       ),
                     ),
                   ],
@@ -258,16 +321,16 @@ class _IncomeCard extends StatelessWidget {
 }
 
 class _BaglogCard extends StatelessWidget {
+  const _BaglogCard();
+
   @override
   Widget build(BuildContext context) {
     final cycle = MockData.cycle;
 
     return SectionCard(
-      icon: Icons.inventory_2_rounded,
+      icon: Icons.inventory_2_outlined,
       title: 'Ringkasan Siklus Baglog',
-      trailing: _CycleChip(label: 'Siklus #04'),
       children: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           NeuSurface(
             variant: NeuVariant.inset,
@@ -282,50 +345,55 @@ class _BaglogCard extends StatelessWidget {
                       Text(
                         'TOTAL BAGLOG AKTIF',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: FontWeight.w700,
-                          letterSpacing: 0.04 * 12,
+                          letterSpacing: 0.04 * 11,
                           color: AppColors.textMuted,
                         ),
                       ),
-                      const SizedBox(height: AppSpacing.s2),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
-                        children: [
-                          Text(
-                            '2.450',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textPrimary,
+                      const SizedBox(height: 6),
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          textBaseline: TextBaseline.alphabetic,
+                          children: [
+                            Text(
+                              '2.450',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.primary800,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            'baglog',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.textSecondary,
+                            const SizedBox(width: 6),
+                            Text(
+                              'baglog',
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: AppColors.textSecondary,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary100,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: const Icon(
-                    Icons.eco_rounded,
-                    color: AppColors.primary800,
-                    size: 26,
+                NeuSurface(
+                  variant: NeuVariant.raised,
+                  radius: 16,
+                  child: Container(
+                    width: 46,
+                    height: 46,
+                    alignment: Alignment.center,
+                    child: const Icon(
+                      Icons.eco_rounded,
+                      color: AppColors.primary800,
+                      size: 26,
+                    ),
                   ),
                 ),
               ],
@@ -335,26 +403,30 @@ class _BaglogCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: MetricTile(
+                child: _CycleMetricTile(
                   label: 'Sehat Produktif',
                   value: '2.210',
-                  tone: MetricTileTone.success,
-                  icon: Icons.eco_rounded,
+                  unit: 'baglog',
+                  valueColor: AppColors.primary800,
+                  badgeIcon: Icons.check_circle_rounded,
+                  badgeColor: const Color(0xFFDDEBDC),
+                  iconColor: AppColors.primary800,
                   progress: cycle.healthy / cycle.total,
-                  variant: NeuVariant.raised,
-                  size: MetricSize.md,
+                  progressBarColor: AppColors.primary800,
                 ),
               ),
               const SizedBox(width: AppSpacing.s3),
               Expanded(
-                child: MetricTile(
+                child: _CycleMetricTile(
                   label: 'Bisa Diobati',
                   value: '165',
-                  tone: MetricTileTone.warning,
-                  icon: Icons.healing_rounded,
+                  unit: 'baglog',
+                  valueColor: AppColors.warning500,
+                  badgeIcon: Icons.healing_rounded,
+                  badgeColor: const Color(0xFFFCEBCB),
+                  iconColor: AppColors.warning500,
                   progress: cycle.treatable / cycle.total,
-                  variant: NeuVariant.raised,
-                  size: MetricSize.md,
+                  progressBarColor: AppColors.warning500,
                 ),
               ),
             ],
@@ -363,27 +435,30 @@ class _BaglogCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: MetricTile(
+                child: _CycleMetricTile(
                   label: 'Afkir / Dibuang',
                   value: '75',
-                  tone: MetricTileTone.danger,
-                  icon: Icons.delete_rounded,
+                  unit: 'baglog',
+                  valueColor: AppColors.danger600,
+                  badgeIcon: Icons.delete_outline_rounded,
+                  badgeColor: const Color(0xFFF8DADA),
+                  iconColor: AppColors.danger600,
                   progress: cycle.discarded / cycle.total,
-                  variant: NeuVariant.raised,
-                  size: MetricSize.md,
+                  progressBarColor: AppColors.danger600,
                 ),
               ),
               const SizedBox(width: AppSpacing.s3),
               Expanded(
-                child: MetricTile(
+                child: _CycleMetricTile(
                   label: 'Tingkat Sehat',
                   value: '90,2%',
                   unit: 'rasio',
-                  tone: MetricTileTone.success,
-                  icon: Icons.show_chart_rounded,
+                  valueColor: AppColors.primary800,
+                  badgeIcon: Icons.query_stats_rounded,
+                  badgeColor: const Color(0xFFDDEBDC),
+                  iconColor: AppColors.primary800,
                   progress: cycle.healthRatio,
-                  variant: NeuVariant.raised,
-                  size: MetricSize.md,
+                  progressBarColor: AppColors.primary800,
                 ),
               ),
             ],
@@ -394,7 +469,123 @@ class _BaglogCard extends StatelessWidget {
   }
 }
 
+class _CycleMetricTile extends StatelessWidget {
+  final String label;
+  final String value;
+  final String unit;
+  final Color valueColor;
+  final IconData badgeIcon;
+  final Color badgeColor;
+  final Color iconColor;
+  final double progress;
+  final Color progressBarColor;
+
+  const _CycleMetricTile({
+    required this.label,
+    required this.value,
+    required this.unit,
+    required this.valueColor,
+    required this.badgeIcon,
+    required this.badgeColor,
+    required this.iconColor,
+    required this.progress,
+    required this.progressBarColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return NeuSurface(
+      variant: NeuVariant.raised,
+      radius: AppRadius.tile,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 14,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  color: badgeColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(badgeIcon, size: 14, color: iconColor),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  value,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: valueColor,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  unit,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.pill),
+            child: Container(
+              height: 5,
+              width: double.infinity,
+              color: const Color(0xFFE5EAE4),
+              child: FractionallySizedBox(
+                alignment: Alignment.centerLeft,
+                widthFactor: progress.clamp(0.04, 1.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: progressBarColor,
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _SelfCheckCard extends StatelessWidget {
+  const _SelfCheckCard();
+
   @override
   Widget build(BuildContext context) {
     final check = MockData.selfCheck;
@@ -404,11 +595,11 @@ class _SelfCheckCard extends StatelessWidget {
       icon: Icons.checklist_rounded,
       title: 'Pengecekan Mandiri Hari Ini',
       trailing: Text(
-        'Target: 100',
+        'Target: ${check.target}',
         style: GoogleFonts.plusJakartaSans(
           fontSize: 13,
-          fontWeight: FontWeight.w600,
-          color: AppColors.primary600,
+          fontWeight: FontWeight.w700,
+          color: AppColors.primary800,
         ),
       ),
       children: Column(
@@ -426,15 +617,15 @@ class _SelfCheckCard extends StatelessWidget {
                     Text(
                       '${check.checked} dari ${check.target} baglog dicek',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
                         color: AppColors.textSecondary,
                       ),
                     ),
                     Text(
                       '80% Selesai',
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: AppColors.primary800,
                       ),
@@ -442,7 +633,24 @@ class _SelfCheckCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacing.s3),
-                AppProgressBar(value: progress, tone: MetricTileTone.success),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                  child: Container(
+                    height: 8,
+                    width: double.infinity,
+                    color: const Color(0xFFDCE2DB),
+                    child: FractionallySizedBox(
+                      alignment: Alignment.centerLeft,
+                      widthFactor: progress.clamp(0.0, 1.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.primary400,
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -458,22 +666,14 @@ class _SelfCheckCard extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.s4,
-                    vertical: AppSpacing.s3,
+                    vertical: 14,
                   ),
                   child: Row(
                     children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: AppColors.primary100,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.photo_camera_rounded,
-                          color: AppColors.primary800,
-                          size: 22,
-                        ),
+                      const Icon(
+                        Icons.photo_camera_outlined,
+                        color: AppColors.primary800,
+                        size: 24,
                       ),
                       const SizedBox(width: AppSpacing.s3),
                       Expanded(
@@ -482,14 +682,14 @@ class _SelfCheckCard extends StatelessWidget {
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.textPrimary,
+                            color: AppColors.primary800,
                           ),
                         ),
                       ),
                       const Icon(
-                        Icons.arrow_forward_ios_rounded,
-                        size: 16,
-                        color: AppColors.primary600,
+                        Icons.arrow_forward_rounded,
+                        size: 20,
+                        color: AppColors.textSecondary,
                       ),
                     ],
                   ),
@@ -498,59 +698,6 @@ class _SelfCheckCard extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SmallChip extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-
-  const _SmallChip({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        decoration: BoxDecoration(
-          color: AppColors.primary100,
-          borderRadius: BorderRadius.circular(AppRadius.pill),
-        ),
-        child: Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-            color: AppColors.primary800,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CycleChip extends StatelessWidget {
-  final String label;
-  const _CycleChip({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: AppColors.accentChip,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.plusJakartaSans(
-          fontSize: 12,
-          fontWeight: FontWeight.w600,
-          color: AppColors.primary800,
-        ),
       ),
     );
   }

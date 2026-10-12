@@ -4,7 +4,13 @@ import '../../core/theme/tokens.dart';
 import '../../core/components/app_header.dart';
 import '../../core/components/bottom_nav.dart';
 import '../home/home_screen.dart';
+<<<<<<< HEAD
 import '../scan/scan_screen.dart';
+=======
+import '../harvest/harvest_screen.dart';
+import '../history/history_screen.dart';
+import '../report/report_screen.dart';
+>>>>>>> Dev
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -21,16 +27,18 @@ class _AppShellState extends State<AppShell> {
       case BottomNavTab.home:
         return const HomeScreen();
       case BottomNavTab.harvest:
-        return _PlaceholderScreen(label: 'Buku Panen');
+        return HarvestScreen(
+          onSaved: () => setState(() => _activeTab = BottomNavTab.home),
+        );
       case BottomNavTab.scan:
         return ScanScreen(
           onBack: () => setState(() => _activeTab = BottomNavTab.home),
           onSavedToHistory: () => setState(() => _activeTab = BottomNavTab.history),
         );
       case BottomNavTab.report:
-        return _PlaceholderScreen(label: 'Laporan');
+        return const ReportScreen();
       case BottomNavTab.history:
-        return _PlaceholderScreen(label: 'Riwayat');
+        return const HistoryScreen();
     }
   }
 
