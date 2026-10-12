@@ -34,11 +34,9 @@ class ScanViewfinderScreen extends StatelessWidget {
                 onBack: onBack,
                 onToggleFlash: onToggleFlash,
               ),
-              const SizedBox(height: AppSpacing.s3),
-              const _DistanceChip(),
               const Spacer(),
               const ScanReticle(),
-              const SizedBox(height: AppSpacing.s3),
+              const SizedBox(height: AppSpacing.s5),
               const _FrameLabel(),
               const Spacer(),
               const _TipsCard(),
@@ -71,12 +69,17 @@ class _TopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _CircleAction(icon: Icons.arrow_back_rounded, onTap: onBack),
+          _CircleAction(
+            icon: Icons.arrow_back_rounded,
+            iconColor: AppColors.primary800,
+            onTap: onBack,
+          ),
           const Spacer(),
-          const _StatusPill(),
+          const _DistancePill(),
           const Spacer(),
           _CircleAction(
             icon: Icons.flashlight_on_rounded,
+            iconColor: AppColors.warning500,
             active: flashOn,
             onTap: onToggleFlash,
           ),
@@ -88,11 +91,13 @@ class _TopBar extends StatelessWidget {
 
 class _CircleAction extends StatelessWidget {
   final IconData icon;
+  final Color iconColor;
   final bool active;
   final VoidCallback onTap;
 
   const _CircleAction({
     required this.icon,
+    required this.iconColor,
     this.active = false,
     required this.onTap,
   });
@@ -112,67 +117,20 @@ class _CircleAction extends StatelessWidget {
         child: Icon(
           icon,
           size: 22,
-          color: active ? AppColors.textOnPrimary : AppColors.textSecondary,
+          color: active ? AppColors.textOnPrimary : iconColor,
         ),
       ),
     );
   }
 }
 
-class _StatusPill extends StatelessWidget {
-  const _StatusPill();
+class _DistancePill extends StatelessWidget {
+  const _DistancePill();
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-        boxShadow: AppShadows.raisedSm,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              color: AppColors.primary600,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            'Offline AI Siap',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            '• 1:1 FOCUS',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: AppColors.primary600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DistanceChip extends StatelessWidget {
-  const _DistanceChip();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.45),
         borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -190,7 +148,7 @@ class _DistanceChip extends StatelessWidget {
             'Jarak Optimal: ',
             style: GoogleFonts.plusJakartaSans(
               fontSize: 13,
-              fontWeight: FontWeight.w400,
+              fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
           ),
@@ -273,7 +231,7 @@ class _TipsCard extends StatelessWidget {
           ),
           children: [
             const TextSpan(
-              text: 'Tips Petani: ',
+              text: 'Tips!: ',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary800,
@@ -303,7 +261,7 @@ class _BottomBar extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.only(
         top: AppSpacing.s4,
-        bottom: MediaQuery.of(context).padding.bottom + AppSpacing.s4,
+        bottom: MediaQuery.of(context).padding.bottom + AppSpacing.s3,
       ),
       decoration: const BoxDecoration(
         color: AppColors.surface,
@@ -311,15 +269,32 @@ class _BottomBar extends StatelessWidget {
           top: Radius.circular(AppRadius.card),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Column(
         children: [
-          _SideButton(icon: Icons.center_focus_strong_rounded, label: 'Makro', onTap: () {}),
-          _Shutter(onTap: onShutter),
-          _SideButton(
-            icon: Icons.photo_library_rounded,
-            label: 'Galeri',
-            onTap: onGallery,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _SideButton(
+                icon: Icons.center_focus_strong_rounded,
+                label: 'Makro',
+                onTap: () {},
+              ),
+              _Shutter(onTap: onShutter),
+              _SideButton(
+                icon: Icons.photo_library_rounded,
+                label: 'Galeri',
+                onTap: onGallery,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.s3),
+          Text(
+            'Ketuk tombol untuk deteksi on-device instan',
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: AppColors.textMuted,
+            ),
           ),
         ],
       ),

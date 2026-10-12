@@ -43,6 +43,7 @@ class ScanResultSheetContent extends StatelessWidget {
           const SizedBox(height: AppSpacing.sectionGap),
           ActionButton(
             label: 'Simpan ke Riwayat Scan',
+            icon: Icons.bookmark_add_rounded,
             variant: ActionVariant.primary,
             fullWidth: true,
             onPress: onSaveToHistory,
@@ -76,7 +77,7 @@ class _DiagnosisHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'HASIL DIAGNOSA VISUAL (ON-DEVICE AI)',
+                'HASIL DIAGNOSA VISUAL',
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
@@ -156,9 +157,9 @@ class _ConfidenceCard extends StatelessWidget {
           Container(
             width: 44,
             height: 44,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: AppColors.primary100,
-              shape: BoxShape.circle,
+              borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(
               Icons.psychology_alt_rounded,
@@ -192,18 +193,6 @@ class _ConfidenceCard extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Model On-Device CNN (Lokal Tanpa Internet) • '
-                  '${result.scannedAt}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    color: AppColors.textMuted,
-                  ),
                 ),
               ],
             ),
@@ -413,7 +402,7 @@ class _MitigationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SectionCard(
       icon: Icons.medical_services_rounded,
-      title: 'Panduan Tindakan Cepat',
+      title: 'Panduan Tindakan Cepat Petani',
       trailing: Text(
         '${result.steps.length} Langkah',
         style: GoogleFonts.plusJakartaSans(

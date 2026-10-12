@@ -4,6 +4,7 @@ import '../../core/theme/tokens.dart';
 import '../../core/components/app_header.dart';
 import '../../core/components/bottom_nav.dart';
 import '../home/home_screen.dart';
+import '../scan/scan_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -22,7 +23,10 @@ class _AppShellState extends State<AppShell> {
       case BottomNavTab.harvest:
         return _PlaceholderScreen(label: 'Buku Panen');
       case BottomNavTab.scan:
-        return _PlaceholderScreen(label: 'Scan');
+        return ScanScreen(
+          onBack: () => setState(() => _activeTab = BottomNavTab.home),
+          onSavedToHistory: () => setState(() => _activeTab = BottomNavTab.history),
+        );
       case BottomNavTab.report:
         return _PlaceholderScreen(label: 'Laporan');
       case BottomNavTab.history:
@@ -32,21 +36,27 @@ class _AppShellState extends State<AppShell> {
 
   @override
   Widget build(BuildContext context) {
+    // Layar scan bersifat fullscreen immersif (DESIGN §8.3, §10 #2):
+    // tanpa AppHeader dan tanpa BottomNav.
+    final bool immersive = _activeTab == BottomNavTab.scan;
+
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
+      SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
+        statusBarIconBrightness: immersive ? Brightness.light : Brightness.dark,
       ),
     );
 
     return Scaffold(
       backgroundColor: AppColors.bg,
-      appBar: const AppHeader(),
+      appBar: immersive ? null : const AppHeader(),
       body: _buildBody(),
-      bottomNavigationBar: BottomNav(
-        active: _activeTab,
-        onChange: (tab) => setState(() => _activeTab = tab),
-      ),
+      bottomNavigationBar: immersive
+          ? null
+          : BottomNav(
+              active: _activeTab,
+              onChange: (tab) => setState(() => _activeTab = tab),
+            ),
     );
   }
 }

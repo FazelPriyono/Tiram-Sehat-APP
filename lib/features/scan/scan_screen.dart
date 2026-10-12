@@ -132,8 +132,9 @@ class _ResultView extends StatelessWidget {
                 onToggleFlash: onToggleFlash,
                 onClose: onClose,
               ),
-              const SizedBox(height: AppSpacing.s4),
+              const Spacer(),
               _DetectionBox(result: result),
+              const SizedBox(height: AppSpacing.s4),
             ],
           ),
         ),
@@ -171,13 +172,16 @@ class _ResultTopBar extends StatelessWidget {
         children: [
           _CircleAction(
             icon: Icons.flashlight_on_rounded,
+            iconColor: AppColors.warning500,
             active: flashOn,
             onTap: onToggleFlash,
           ),
           const Spacer(),
-          _ResultStatusPill(),
-          const Spacer(),
-          _CircleAction(icon: Icons.close_rounded, onTap: onClose),
+          _CircleAction(
+            icon: Icons.close_rounded,
+            iconColor: AppColors.textSecondary,
+            onTap: onClose,
+          ),
         ],
       ),
     );
@@ -186,11 +190,13 @@ class _ResultTopBar extends StatelessWidget {
 
 class _CircleAction extends StatelessWidget {
   final IconData icon;
+  final Color iconColor;
   final bool active;
   final VoidCallback onTap;
 
   const _CircleAction({
     required this.icon,
+    required this.iconColor,
     this.active = false,
     required this.onTap,
   });
@@ -210,45 +216,8 @@ class _CircleAction extends StatelessWidget {
         child: Icon(
           icon,
           size: 22,
-          color: active ? AppColors.textOnPrimary : AppColors.textSecondary,
+          color: active ? AppColors.textOnPrimary : iconColor,
         ),
-      ),
-    );
-  }
-}
-
-class _ResultStatusPill extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-        boxShadow: AppShadows.raisedSm,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              color: AppColors.primary600,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 6),
-          Text(
-            'KAMERA OFFLINE AI AKTIF',
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.04 * 12,
-              color: AppColors.textSecondary,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -262,43 +231,34 @@ class _DetectionBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SizedBox(
-        width: 240,
-        height: 190,
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            const CustomPaint(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(
+            width: 240,
+            height: 190,
+            child: CustomPaint(
               size: Size(240, 190),
               painter: _DetectionCornerPainter(),
             ),
-            Positioned(
-              top: -14,
-              left: 0,
-              right: 0,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppColors.warning500,
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                  ),
-                  child: Text(
-                    '⚠ ${result.scientificName} 94%',
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textOnPrimary,
-                    ),
-                  ),
-                ),
+          ),
+          const SizedBox(height: AppSpacing.s2),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: AppColors.warning500,
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+            ),
+            child: Text(
+              '⚠ ${result.scientificName} 94%',
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textOnPrimary,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
