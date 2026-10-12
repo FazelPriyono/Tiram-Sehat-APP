@@ -1,30 +1,45 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import 'package:tiram_sehat/main.dart';
+import 'package:tiram_sehat/core/theme/app_theme.dart';
+import 'package:tiram_sehat/features/harvest/harvest_screen.dart';
+import 'package:tiram_sehat/features/shell/app_shell.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUpAll(() {
+    GoogleFonts.config.allowRuntimeFetching = false;
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('Buku Panen menampilkan salinan §8.2 dan estimasi realtime',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: AppTheme.light,
+        home: const Scaffold(body: HarvestScreen()),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    expect(find.text('Catat Hasil Panen'), findsOneWidget);
+    expect(find.text('18,5 Kg × Rp 15.000'), findsOneWidget);
+    expect(find.text('Rp 277.500'), findsOneWidget);
+    expect(find.text('18,5'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.add_rounded));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('19,0'), findsOneWidget);
+    expect(find.text('Rp 285.000'), findsOneWidget);
+  });
+
+  testWidgets('App shell membuka tab Buku Panen', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(home: AppShell()),
+    );
+
+    await tester.tap(find.byIcon(Icons.menu_book_rounded));
+    await tester.pump();
+
+    expect(find.text('Catat Hasil Panen'), findsOneWidget);
   });
 }
