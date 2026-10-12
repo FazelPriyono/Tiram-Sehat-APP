@@ -209,10 +209,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
           // 8. Kartu Aksi Inspeksi Manual Baglog
           _buildManualInspectionCard(),
-          const SizedBox(height: AppSpacing.sectionGap),
-
-          // 9. Footer Penyimpanan Lokal & Kapasitas SQLite
-          _buildFooter(),
         ],
       ),
     );
@@ -525,51 +521,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildFooter() {
-    return Center(
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-            decoration: BoxDecoration(
-              color: const Color(0xFFE3E9E2),
-              borderRadius: BorderRadius.circular(AppRadius.pill),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Icons.dns_rounded,
-                  size: 15,
-                  color: AppColors.primary600,
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  'Tersimpan di SQLite internal • Kapasitas: 4,8 MB',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Dikelola oleh BUMDes Margomulyo • Siap Bekerja Offline',
-            textAlign: TextAlign.center,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 11.5,
-              fontWeight: FontWeight.w400,
-              color: AppColors.textMuted,
-            ),
-          ),
-        ],
       ),
     );
   }
