@@ -55,15 +55,19 @@ class ActionButton extends StatelessWidget {
       mainAxisSize: fullWidth ? MainAxisSize.max : MainAxisSize.min,
       children: [
         if (icon != null) ...[
-          Icon(icon, color: _textColor, size: 20),
+          Icon(icon, color: _textColor, size: 18),
           const SizedBox(width: AppSpacing.s2),
         ],
-        Text(
-          label,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 15,
-            fontWeight: FontWeight.w700,
-            color: _textColor,
+        Flexible(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: _textColor,
+            ),
           ),
         ),
       ],
@@ -74,7 +78,7 @@ class ActionButton extends StatelessWidget {
       child: Container(
         width: fullWidth ? double.infinity : null,
         height: 52,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s5),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s3),
         decoration: BoxDecoration(
           color: _bg,
           borderRadius: BorderRadius.circular(AppRadius.button),

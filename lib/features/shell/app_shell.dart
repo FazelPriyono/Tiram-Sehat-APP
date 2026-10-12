@@ -5,6 +5,7 @@ import '../../core/components/app_header.dart';
 import '../../core/components/bottom_nav.dart';
 import '../home/home_screen.dart';
 import '../harvest/harvest_screen.dart';
+import '../history/history_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -29,7 +30,7 @@ class _AppShellState extends State<AppShell> {
       case BottomNavTab.report:
         return _PlaceholderScreen(label: 'Laporan');
       case BottomNavTab.history:
-        return _PlaceholderScreen(label: 'Riwayat');
+        return const HistoryScreen();
     }
   }
 

@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiram_sehat/core/theme/app_theme.dart';
 import 'package:tiram_sehat/features/harvest/harvest_screen.dart';
 import 'package:tiram_sehat/features/shell/app_shell.dart';
+import 'package:tiram_sehat/main.dart';
 
 void main() {
   setUpAll(() {
     GoogleFonts.config.allowRuntimeFetching = false;
+  });
+
+  testWidgets('App smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(const ProviderScope(child: TiramSehatApp()));
+    expect(find.text('TiramSehat'), findsOneWidget);
   });
 
   testWidgets('Buku Panen menampilkan salinan §8.2 dan estimasi realtime',
