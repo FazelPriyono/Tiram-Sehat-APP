@@ -81,6 +81,8 @@ class HistoryArchivedCard extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text(
                     '${item.rack} • Kolom ${item.col} • ${item.when}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,

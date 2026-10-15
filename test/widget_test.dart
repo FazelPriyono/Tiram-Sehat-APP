@@ -14,6 +14,7 @@ void main() {
 
   testWidgets('App smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const ProviderScope(child: TiramSehatApp()));
+    await tester.pumpAndSettle();
     expect(find.text('TiramSehat'), findsOneWidget);
   });
 

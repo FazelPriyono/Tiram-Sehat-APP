@@ -75,7 +75,7 @@ class HistoryCard extends StatelessWidget {
       variant: NeuVariant.raised,
       radius: AppRadius.card,
       tone: _neuTone,
-      padding: const EdgeInsets.all(AppSpacing.cardPadding),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -93,15 +93,23 @@ class HistoryCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          _buildHeaderBadge(),
-                          const Spacer(),
-                          Text(
-                            item.when,
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.textMuted,
+                          Flexible(
+                            child: _buildHeaderBadge(),
+                          ),
+                          const SizedBox(width: 6),
+                          Expanded(
+                            child: Text(
+                              item.when,
+                              textAlign: TextAlign.right,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w400,
+                                color: AppColors.textMuted,
+                              ),
                             ),
                           ),
                         ],
@@ -112,7 +120,7 @@ class HistoryCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 15,
+                          fontSize: 14.5,
                           fontWeight: FontWeight.w700,
                           color: AppColors.textPrimary,
                         ),
@@ -143,11 +151,11 @@ class HistoryCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 // Tombol Chevron
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: 28,
+                  height: 28,
                   decoration: BoxDecoration(
                     color: AppColors.surface,
                     shape: BoxShape.circle,
@@ -158,7 +166,7 @@ class HistoryCard extends StatelessWidget {
                     duration: const Duration(milliseconds: 200),
                     child: const Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      size: 20,
+                      size: 18,
                       color: AppColors.textSecondary,
                     ),
                   ),

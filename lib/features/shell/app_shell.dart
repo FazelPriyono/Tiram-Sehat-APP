@@ -8,6 +8,7 @@ import '../scan/scan_screen.dart';
 import '../harvest/harvest_screen.dart';
 import '../history/history_screen.dart';
 import '../report/report_screen.dart';
+import '../auth/login_screen.dart';
 
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
@@ -54,7 +55,15 @@ class _AppShellState extends State<AppShell> {
 
     return Scaffold(
       backgroundColor: AppColors.bg,
-      appBar: immersive ? null : const AppHeader(),
+      appBar: immersive
+          ? null
+          : AppHeader(
+              onProfilePress: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                );
+              },
+            ),
       body: _buildBody(),
       bottomNavigationBar: immersive
           ? null
@@ -66,20 +75,3 @@ class _AppShellState extends State<AppShell> {
   }
 }
 
-class _PlaceholderScreen extends StatelessWidget {
-  final String label;
-  const _PlaceholderScreen({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 18,
-          color: AppColors.textMuted,
-        ),
-      ),
-    );
-  }
-}

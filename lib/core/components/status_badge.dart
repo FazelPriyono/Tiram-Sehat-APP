@@ -53,7 +53,7 @@ class StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3.5),
       decoration: BoxDecoration(
         color: _bg,
         borderRadius: BorderRadius.circular(AppRadius.pill),
@@ -65,12 +65,16 @@ class StatusBadge extends StatelessWidget {
             Icon(icon, size: 12, color: _textColor),
             const SizedBox(width: 4),
           ],
-          Text(
-            label,
-            style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: _textColor,
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.plusJakartaSans(
+                fontSize: 11.5,
+                fontWeight: FontWeight.w600,
+                color: _textColor,
+              ),
             ),
           ),
         ],
