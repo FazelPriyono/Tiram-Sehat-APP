@@ -14,7 +14,9 @@ void main() {
 
   testWidgets('App smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const ProviderScope(child: TiramSehatApp()));
-    await tester.pumpAndSettle();
+    // Layar pembuka kini onboarding yang punya animasi berulang, jadi tidak
+    // bisa memakai `pumpAndSettle` (tidak akan pernah "settle").
+    await tester.pump(const Duration(milliseconds: 1200));
     expect(find.text('TiramSehat'), findsOneWidget);
   });
 
