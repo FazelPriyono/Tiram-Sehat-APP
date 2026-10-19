@@ -5,8 +5,44 @@ import '../../core/components/neu_surface.dart';
 import '../../core/components/section_card.dart';
 import '../../mock/mock_data.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+// ─── HomeScreen ──────────────────────────────────────────────────────────────
+
+class HomeScreen extends StatefulWidget {
+  /// Dipanggil saat user menekan "Mulai Scan Kumbung" untuk berpindah ke tab scan.
+  final VoidCallback? onGoToScan;
+
+  const HomeScreen({super.key, this.onGoToScan});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeOutCubic,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +55,17 @@ class HomeScreen extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          _HomeGreetingHeader(),
-          SizedBox(height: AppSpacing.sectionGap),
-          _IncomeCard(),
-          SizedBox(height: AppSpacing.sectionGap),
-          _BaglogCard(),
-          SizedBox(height: AppSpacing.sectionGap),
-          _SelfCheckCard(),
+        children: [
+          const _HomeGreetingHeader(),
+          const SizedBox(height: AppSpacing.sectionGap),
+          _IncomeCard(animation: _animation),
+          const SizedBox(height: AppSpacing.sectionGap),
+          _BaglogCard(animation: _animation),
+          const SizedBox(height: AppSpacing.sectionGap),
+          _SelfCheckCard(
+            animation: _animation,
+            onGoToScan: widget.onGoToScan,
+          ),
         ],
       ),
     );
@@ -84,8 +123,44 @@ class _HomeGreetingHeader extends StatelessWidget {
   }
 }
 
+// ─── Count-Up Helper ─────────────────────────────────────────────────────────
+
+/// Teks yang beranimasi count-up dari 0 ke [target].
+class _CountUpText extends AnimatedWidget {
+  final double target;
+  final TextStyle style;
+  final String Function(double value) formatter;
+
+  const _CountUpText({
+    required Animation<double> animation,
+    required this.target,
+    required this.style,
+    required this.formatter,
+  }) : super(listenable: animation);
+
+  @override
+  Widget build(BuildContext context) {
+    final anim = listenable as Animation<double>;
+    return Text(formatter(anim.value * target), style: style);
+  }
+}
+
+// ─── Income Card ─────────────────────────────────────────────────────────────
+
 class _IncomeCard extends StatelessWidget {
-  const _IncomeCard();
+  final Animation<double> animation;
+  const _IncomeCard({required this.animation});
+
+  // Format ribuan sederhana tanpa library external
+  static String _rupiah(double v) {
+    final s = v.toInt().toString();
+    final buf = StringBuffer('Rp ');
+    for (int i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) buf.write('.');
+      buf.write(s[i]);
+    }
+    return buf.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +194,10 @@ class _IncomeCard extends StatelessWidget {
                       FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
-                        child: Text(
-                          'Rp 277.500',
+                        child: _CountUpText(
+                          animation: animation,
+                          target: harvest.grossIncome.toDouble(),
+                          formatter: _rupiah,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 34,
                             fontWeight: FontWeight.w800,
@@ -193,8 +270,10 @@ class _IncomeCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.baseline,
                           textBaseline: TextBaseline.alphabetic,
                           children: [
-                            Text(
-                              '18,5',
+                            _CountUpText(
+                              animation: animation,
+                              target: harvest.weightKg,
+                              formatter: (v) => v.toStringAsFixed(1),
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 22,
                                 fontWeight: FontWeight.w700,
@@ -247,8 +326,10 @@ class _IncomeCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.baseline,
                           textBaseline: TextBaseline.alphabetic,
                           children: [
-                            Text(
-                              'Rp 15.000',
+                            _CountUpText(
+                              animation: animation,
+                              target: harvest.pricePerKg.toDouble(),
+                              formatter: _rupiah,
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -320,8 +401,21 @@ class _IncomeCard extends StatelessWidget {
   }
 }
 
+// ─── Baglog Card ─────────────────────────────────────────────────────────────
+
 class _BaglogCard extends StatelessWidget {
-  const _BaglogCard();
+  final Animation<double> animation;
+  const _BaglogCard({required this.animation});
+
+  static String _fmtInt(double v) {
+    final s = v.toInt().toString();
+    final buf = StringBuffer();
+    for (int i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) buf.write('.');
+      buf.write(s[i]);
+    }
+    return buf.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -359,8 +453,10 @@ class _BaglogCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.baseline,
                           textBaseline: TextBaseline.alphabetic,
                           children: [
-                            Text(
-                              '2.450',
+                            _CountUpText(
+                              animation: animation,
+                              target: cycle.total.toDouble(),
+                              formatter: _fmtInt,
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 32,
                                 fontWeight: FontWeight.w700,
@@ -404,8 +500,9 @@ class _BaglogCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _CycleMetricTile(
+                  animation: animation,
                   label: 'Sehat Produktif',
-                  value: '2.210',
+                  target: cycle.healthy.toDouble(),
                   unit: 'baglog',
                   valueColor: AppColors.primary800,
                   badgeIcon: Icons.check_circle_rounded,
@@ -413,13 +510,15 @@ class _BaglogCard extends StatelessWidget {
                   iconColor: AppColors.primary800,
                   progress: cycle.healthy / cycle.total,
                   progressBarColor: AppColors.primary800,
+                  formatter: _fmtInt,
                 ),
               ),
               const SizedBox(width: AppSpacing.s3),
               Expanded(
                 child: _CycleMetricTile(
+                  animation: animation,
                   label: 'Bisa Diobati',
-                  value: '165',
+                  target: cycle.treatable.toDouble(),
                   unit: 'baglog',
                   valueColor: AppColors.warning500,
                   badgeIcon: Icons.healing_rounded,
@@ -427,6 +526,7 @@ class _BaglogCard extends StatelessWidget {
                   iconColor: AppColors.warning500,
                   progress: cycle.treatable / cycle.total,
                   progressBarColor: AppColors.warning500,
+                  formatter: _fmtInt,
                 ),
               ),
             ],
@@ -436,8 +536,9 @@ class _BaglogCard extends StatelessWidget {
             children: [
               Expanded(
                 child: _CycleMetricTile(
+                  animation: animation,
                   label: 'Afkir / Dibuang',
-                  value: '75',
+                  target: cycle.discarded.toDouble(),
                   unit: 'baglog',
                   valueColor: AppColors.danger600,
                   badgeIcon: Icons.delete_outline_rounded,
@@ -445,13 +546,15 @@ class _BaglogCard extends StatelessWidget {
                   iconColor: AppColors.danger600,
                   progress: cycle.discarded / cycle.total,
                   progressBarColor: AppColors.danger600,
+                  formatter: _fmtInt,
                 ),
               ),
               const SizedBox(width: AppSpacing.s3),
               Expanded(
                 child: _CycleMetricTile(
+                  animation: animation,
                   label: 'Tingkat Sehat',
-                  value: '90,2%',
+                  target: cycle.healthRatio * 100,
                   unit: 'rasio',
                   valueColor: AppColors.primary800,
                   badgeIcon: Icons.query_stats_rounded,
@@ -459,6 +562,7 @@ class _BaglogCard extends StatelessWidget {
                   iconColor: AppColors.primary800,
                   progress: cycle.healthRatio,
                   progressBarColor: AppColors.primary800,
+                  formatter: (v) => '${v.toStringAsFixed(1)}%',
                 ),
               ),
             ],
@@ -469,9 +573,12 @@ class _BaglogCard extends StatelessWidget {
   }
 }
 
+// ─── Cycle Metric Tile ───────────────────────────────────────────────────────────
+
 class _CycleMetricTile extends StatelessWidget {
+  final Animation<double> animation;
   final String label;
-  final String value;
+  final double target;
   final String unit;
   final Color valueColor;
   final IconData badgeIcon;
@@ -479,10 +586,12 @@ class _CycleMetricTile extends StatelessWidget {
   final Color iconColor;
   final double progress;
   final Color progressBarColor;
+  final String Function(double) formatter;
 
   const _CycleMetricTile({
+    required this.animation,
     required this.label,
-    required this.value,
+    required this.target,
     required this.unit,
     required this.valueColor,
     required this.badgeIcon,
@@ -490,6 +599,7 @@ class _CycleMetricTile extends StatelessWidget {
     required this.iconColor,
     required this.progress,
     required this.progressBarColor,
+    required this.formatter,
   });
 
   @override
@@ -538,8 +648,10 @@ class _CycleMetricTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text(
-                  value,
+                _CountUpText(
+                  animation: animation,
+                  target: target,
+                  formatter: formatter,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -559,19 +671,22 @@ class _CycleMetricTile extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(AppRadius.pill),
-            child: Container(
-              height: 5,
-              width: double.infinity,
-              color: const Color(0xFFE5EAE4),
-              child: FractionallySizedBox(
-                alignment: Alignment.centerLeft,
-                widthFactor: progress.clamp(0.04, 1.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: progressBarColor,
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
+          AnimatedBuilder(
+            animation: animation,
+            builder: (context, _) => ClipRRect(
+              borderRadius: BorderRadius.circular(AppRadius.pill),
+              child: Container(
+                height: 5,
+                width: double.infinity,
+                color: const Color(0xFFE5EAE4),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: (progress * animation.value).clamp(0.04, 1.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: progressBarColor,
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
+                    ),
                   ),
                 ),
               ),
@@ -583,8 +698,13 @@ class _CycleMetricTile extends StatelessWidget {
   }
 }
 
+// ─── Self Check Card ───────────────────────────────────────────────────────────
+
 class _SelfCheckCard extends StatelessWidget {
-  const _SelfCheckCard();
+  final Animation<double> animation;
+  final VoidCallback? onGoToScan;
+
+  const _SelfCheckCard({required this.animation, this.onGoToScan});
 
   @override
   Widget build(BuildContext context) {
@@ -614,38 +734,55 @@ class _SelfCheckCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      '${check.checked} dari ${check.target} baglog dicek',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.textSecondary,
-                      ),
+                    AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, _) {
+                        final cur = (animation.value * check.checked).toInt();
+                        return Text(
+                          '$cur dari ${check.target} baglog dicek',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: AppColors.textSecondary,
+                          ),
+                        );
+                      },
                     ),
-                    Text(
-                      '80% Selesai',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary800,
-                      ),
+                    AnimatedBuilder(
+                      animation: animation,
+                      builder: (context, _) {
+                        final pct = (animation.value * progress * 100).round();
+                        return Text(
+                          '$pct% Selesai',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary800,
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.s3),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(AppRadius.pill),
-                  child: Container(
-                    height: 8,
-                    width: double.infinity,
-                    color: const Color(0xFFDCE2DB),
-                    child: FractionallySizedBox(
-                      alignment: Alignment.centerLeft,
-                      widthFactor: progress.clamp(0.0, 1.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.primary400,
-                          borderRadius: BorderRadius.circular(AppRadius.pill),
+                AnimatedBuilder(
+                  animation: animation,
+                  builder: (context, _) => ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
+                    child: Container(
+                      height: 8,
+                      width: double.infinity,
+                      color: const Color(0xFFDCE2DB),
+                      child: FractionallySizedBox(
+                        alignment: Alignment.centerLeft,
+                        widthFactor:
+                            (progress * animation.value).clamp(0.0, 1.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.primary400,
+                            borderRadius:
+                                BorderRadius.circular(AppRadius.pill),
+                          ),
                         ),
                       ),
                     ),
@@ -655,6 +792,7 @@ class _SelfCheckCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.s3),
+          // ── Tombol Mulai Scan Kumbung ─────────────────────────────────────────
           NeuSurface(
             variant: NeuVariant.raised,
             radius: AppRadius.tile,
@@ -662,7 +800,7 @@ class _SelfCheckCard extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(AppRadius.tile),
-                onTap: () {},
+                onTap: onGoToScan, // ←─ tersambung ke halaman scan
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.s4,
