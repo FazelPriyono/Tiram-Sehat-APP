@@ -1,4 +1,4 @@
-# 🍄 TiramSehat
+# TiramSehat
 
 > **Aplikasi manajemen kesehatan baglog & panen jamur tiram untuk petani BUMDes Margomulyo.**
 
@@ -6,7 +6,7 @@ TiramSehat adalah aplikasi mobile berbasis Flutter yang dirancang khusus untuk m
 
 ---
 
-## 🎯 Tujuan Aplikasi
+## Tujuan Aplikasi
 
 | Masalah | Solusi TiramSehat |
 |---|---|
@@ -17,9 +17,9 @@ TiramSehat adalah aplikasi mobile berbasis Flutter yang dirancang khusus untuk m
 
 ---
 
-## ✨ Fitur Utama
+## Fitur Utama
 
-### 🏠 Beranda (Home)
+### Beranda (Home)
 - Salam kontekstual & identitas kumbung aktif
 - **Estimasi pendapatan panen hari ini** — dihitung otomatis dari berat × harga jual
 - **Ringkasan siklus baglog** — total aktif, sehat produktif, bisa diobati, afkir, dan tingkat kesehatan
@@ -27,37 +27,37 @@ TiramSehat adalah aplikasi mobile berbasis Flutter yang dirancang khusus untuk m
 - Tombol **"Mulai Scan Kumbung"** yang langsung membuka halaman scan
 - Animasi **count-up** pada seluruh data angka saat halaman dimuat
 
-### 📷 Scan Kumbung (Scan)
+### Scan Kumbung (Scan)
 - Antarmuka kamera fullscreen immersive (tanpa header & bottom nav)
 - Simulasi analisis visual baglog — mendeteksi jenis penyakit jamur, lokasi infeksi, dan tingkat keparahan
 - Hasil scan menampilkan: nama diagnosis, nama ilmiah, persentase keyakinan, dan rekomendasi langkah penanganan bertahap
 - Opsi simpan hasil ke riwayat
 
-### 🌾 Catat Panen (Harvest)
+### Catat Panen (Harvest)
 - Form pencatatan berat panen (Kg) dan harga jual per Kg
 - Kalkulasi gross income otomatis
 - Pilihan tanggal & waktu panen
 - Field catatan opsional
 
-### 📋 Riwayat Diagnosa (History)
+### Riwayat Diagnosa (History)
 - Daftar riwayat scan tersusun dalam 3 kategori: **Perlu Tindakan**, **Selesai Diobati & Pulih**, dan **Riwayat Terarsip**
 - Kartu riwayat yang dapat diperluas (expandable) dengan detail status, catatan penanganan, dan tombol konfirmasi
 - Badge warna berdasarkan tingkat keparahan (warning / danger / success)
 
-### 📊 Laporan Produksi (Report)
+### Laporan Produksi (Report)
 - Ringkasan produksi harian: berat panen, delta dari hari sebelumnya
 - Grafik tren tingkat kesehatan baglog
 - Rangkuman bulanan: pendapatan, total panen Kg, estimasi kerugian yang berhasil dicegah
 - Info batch panen aktif (varietas, hari ke-, grade)
 
-### 🔐 Autentikasi (Auth)
+### Autentikasi (Auth)
 - **Onboarding screen** bertahap — memperkenalkan fitur utama aplikasi kepada pengguna baru
 - **Login screen** — mendukung login email/password dan Google Sign-In
 - Desain visual modern dengan ilustrasi animasi
 
 ---
 
-## 🔄 Alur Penggunaan
+## Alur Penggunaan
 
 ```
 Buka Aplikasi
@@ -86,7 +86,7 @@ Buka Aplikasi
 
 ---
 
-## 🗂️ Struktur Inti Proyek
+## Struktur Inti Proyek
 
 ```
 lib/
@@ -150,7 +150,7 @@ test/
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Kategori | Teknologi |
 |---|---|
@@ -164,7 +164,7 @@ test/
 
 ---
 
-## 🚀 Cara Menjalankan
+## Cara Menjalankan
 
 ### Prasyarat
 
@@ -196,7 +196,7 @@ flutter run -d <device_id>
 
 ---
 
-## 📦 Build Produksi
+## Build Produksi
 
 ```bash
 # Android — APK release
@@ -213,7 +213,7 @@ flutter build appbundle --release
 
 ---
 
-## 🧪 Menjalankan Tes
+## Menjalankan Tes
 
 ```bash
 # Jalankan semua unit & widget test
@@ -226,7 +226,7 @@ flutter test test/onboarding_screen_test.dart
 
 ---
 
-## 🌿 Alur Git & Branching
+## Alur Git & Branching
 
 | Branch | Fungsi |
 |---|---|
@@ -242,7 +242,7 @@ Branch pribadi → Commit → Push → Pull Request ke Dev → Review → Merge
 ---
 
 
-## 👥 Tim Pengembang
+## Tim Pengembang
 
 Proyek ini dikembangkan sebagai bagian dari mata kuliah **Project Based Learning (PBL)**, Program Studi Sarjana Terapan Teknik Informatika — **Politeknik Negeri Malang**, Tahun Akademik 2026/2027.
 
@@ -258,7 +258,7 @@ Proyek ini dikembangkan sebagai bagian dari mata kuliah **Project Based Learning
 
 ## 📌 Konteks Proyek
 
-**TiramSehat** (a.k.a. MushScan) menggunakan **Computer Vision** dengan model CNN/MobileNet yang dikonversi ke **TensorFlow Lite** dan dijalankan secara **on-device** pada smartphone. Pengguna mengambil gambar baglog melalui kamera, lalu sistem melakukan klasifikasi dan menampilkan status **Sehat / Terkontaminasi** beserta confidence score serta rekomendasi mitigasi apabila ditemukan kontaminasi.
+**TiramSehat** menggunakan **Computer Vision** dengan model CNN/MobileNet yang dikonversi ke **TensorFlow Lite** dan dijalankan secara **on-device** pada smartphone. Pengguna mengambil gambar baglog melalui kamera, lalu sistem melakukan klasifikasi dan menampilkan status **Sehat / Terkontaminasi** beserta confidence score serta rekomendasi mitigasi apabila ditemukan kontaminasi.
 
 - **Target Pengguna:** Petani dan pengelola BUMDes Desa Margomulyo, Kabupaten Banyuwangi
 - **Lokasi Pengujian:** Kumbung budidaya jamur tiram BUMDes Desa Margomulyo
@@ -266,6 +266,6 @@ Proyek ini dikembangkan sebagai bagian dari mata kuliah **Project Based Learning
 
 ---
 
-## 📄 Lisensi
+## Lisensi
 
 Proyek ini bersifat **privat** dan dikembangkan untuk keperluan akademik dan operasional BUMDes Margomulyo. Dilarang mendistribusikan atau mereplikasi tanpa izin.
