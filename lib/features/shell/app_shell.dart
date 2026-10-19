@@ -23,7 +23,9 @@ class _AppShellState extends State<AppShell> {
   Widget _buildBody() {
     switch (_activeTab) {
       case BottomNavTab.home:
-        return const HomeScreen();
+        return HomeScreen(
+          onGoToScan: () => setState(() => _activeTab = BottomNavTab.scan),
+        );
       case BottomNavTab.harvest:
         return HarvestScreen(
           onSaved: () => setState(() => _activeTab = BottomNavTab.home),
