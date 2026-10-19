@@ -20,35 +20,34 @@ TiramSehat adalah aplikasi mobile berbasis Flutter yang dirancang khusus untuk m
 ## Fitur Utama
 
 ### Beranda (Home)
-- Salam kontekstual & identitas kumbung aktif
+- Sapaan otomatis sesuai waktu & informasi kumbung yang sedang dipantau
 - **Estimasi pendapatan panen hari ini** — dihitung otomatis dari berat × harga jual
 - **Ringkasan siklus baglog** — total aktif, sehat produktif, bisa diobati, afkir, dan tingkat kesehatan
-- **Pengecekan mandiri harian** — progress bar target baglog yang dicek
+- **Target pengecekan harian** — indikator pencapaian jumlah baglog yang sudah diperiksa
 - Tombol **"Mulai Scan Kumbung"** yang langsung membuka halaman scan
-- Animasi **count-up** pada seluruh data angka saat halaman dimuat
 
 ### Scan Kumbung (Scan)
-- Antarmuka kamera fullscreen immersive (tanpa header & bottom nav)
-- Simulasi analisis visual baglog — mendeteksi jenis penyakit jamur, lokasi infeksi, dan tingkat keparahan
-- Hasil scan menampilkan: nama diagnosis, nama ilmiah, persentase keyakinan, dan rekomendasi langkah penanganan bertahap
+- Tampilan kamera layar penuh agar proses pemindaian baglog lebih leluasa dan jelas
+- Deteksi otomatis kondisi baglog melalui kamera — mendeteksi jenis penyakit jamur, lokasi infeksi, dan tingkat keparahannya
+- Hasil scan menampilkan: nama diagnosis, nama ilmiah, tingkat akurasi deteksi, dan rekomendasi langkah penanganan bertahap
 - Opsi simpan hasil ke riwayat
 
 ### Catat Panen (Harvest)
 - Form pencatatan berat panen (Kg) dan harga jual per Kg
-- Kalkulasi gross income otomatis
+- Hitung otomatis total pendapatan kotor (sebelum dikurangi biaya)
 - Pilihan tanggal & waktu panen
-- Field catatan opsional
+- Kolom catatan tambahan (jika diperlukan)
 
 ### Riwayat Diagnosa (History)
 - Daftar riwayat scan tersusun dalam 3 kategori: **Perlu Tindakan**, **Selesai Diobati & Pulih**, dan **Riwayat Terarsip**
-- Kartu riwayat yang dapat diperluas (expandable) dengan detail status, catatan penanganan, dan tombol konfirmasi
-- Badge warna berdasarkan tingkat keparahan (warning / danger / success)
+- Daftar riwayat yang bisa diklik untuk melihat detail lengkap dengan detail status, catatan penanganan, dan tombol konfirmasi
+- Label warna sesuai kondisi baglog (Kuning: Waspada, Merah: Bahaya, Hijau: Sehat/Pulih)
 
 ### Laporan Produksi (Report)
-- Ringkasan produksi harian: berat panen, delta dari hari sebelumnya
+- Ringkasan produksi harian: berat panen serta selisihnya (naik/turun) dibandingkan hari sebelumnya
 - Grafik tren tingkat kesehatan baglog
 - Rangkuman bulanan: pendapatan, total panen Kg, estimasi kerugian yang berhasil dicegah
-- Info batch panen aktif (varietas, hari ke-, grade)
+- Informasi kelompok (batch) tanam yang sedang berjalan (jenis jamur, usia hari, dan kualitas/grade)
 
 ### Autentikasi (Auth)
 - **Onboarding screen** bertahap — memperkenalkan fitur utama aplikasi kepada pengguna baru
@@ -256,7 +255,7 @@ Proyek ini dikembangkan sebagai bagian dari mata kuliah **Project Based Learning
 
 ---
 
-## 📌 Konteks Proyek
+## Konteks Proyek
 
 **TiramSehat** menggunakan **Computer Vision** dengan model CNN/MobileNet yang dikonversi ke **TensorFlow Lite** dan dijalankan secara **on-device** pada smartphone. Pengguna mengambil gambar baglog melalui kamera, lalu sistem melakukan klasifikasi dan menampilkan status **Sehat / Terkontaminasi** beserta confidence score serta rekomendasi mitigasi apabila ditemukan kontaminasi.
 
