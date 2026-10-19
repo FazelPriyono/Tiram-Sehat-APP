@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../core/theme/tokens.dart';
-import 'camera_preview_placeholder.dart';
 import 'scan_reticle.dart';
 
 class ScanViewfinderScreen extends StatelessWidget {
@@ -10,6 +9,9 @@ class ScanViewfinderScreen extends StatelessWidget {
   final VoidCallback onGallery;
   final bool flashOn;
   final VoidCallback onToggleFlash;
+  final bool macroOn;
+  final VoidCallback onToggleMacro;
+  final Widget cameraPreview;
 
   const ScanViewfinderScreen({
     super.key,
@@ -18,6 +20,9 @@ class ScanViewfinderScreen extends StatelessWidget {
     required this.onGallery,
     required this.flashOn,
     required this.onToggleFlash,
+    this.macroOn = false,
+    required this.onToggleMacro,
+    required this.cameraPreview,
   });
 
   @override
@@ -25,23 +30,36 @@ class ScanViewfinderScreen extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        const CameraPreviewPlaceholder(),
+        cameraPreview,
         SafeArea(
-          child: Column(
-            children: [
-              _TopBar(
-                flashOn: flashOn,
-                onBack: onBack,
-                onToggleFlash: onToggleFlash,
-              ),
-              const Spacer(),
-              const ScanReticle(),
-              const SizedBox(height: AppSpacing.s5),
-              const _FrameLabel(),
-              const Spacer(),
-              const _TipsCard(),
-              _BottomBar(onShutter: onShutter, onGallery: onGallery),
-            ],
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // Ukuran reticle proporsional terhadap tinggi layar agar tidak overflow
+              final reticleSize =
+                  (constraints.maxHeight * 0.35).clamp(180.0, 280.0);
+
+              return Column(
+                children: [
+                  _TopBar(
+                    flashOn: flashOn,
+                    onBack: onBack,
+                    onToggleFlash: onToggleFlash,
+                  ),
+                  const Spacer(),
+                  ScanReticle(size: reticleSize),
+                  const SizedBox(height: AppSpacing.s3),
+                  const _FrameLabel(),
+                  const Spacer(),
+                  const _TipsCard(),
+                  _BottomBar(
+                    onShutter: onShutter,
+                    onGallery: onGallery,
+                    macroOn: macroOn,
+                    onToggleMacro: onToggleMacro,
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ],
@@ -229,15 +247,15 @@ class _TipsCard extends StatelessWidget {
             fontWeight: FontWeight.w400,
             color: AppColors.textSecondary,
           ),
-          children: [
-            const TextSpan(
+          children: const [
+            TextSpan(
               text: 'Tips!: ',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.primary800,
               ),
             ),
-            const TextSpan(
+            TextSpan(
               text:
                   'Pastikan permukaan miselium bebas bayangan gelap tangan Anda.',
             ),
@@ -252,8 +270,15 @@ class _TipsCard extends StatelessWidget {
 class _BottomBar extends StatelessWidget {
   final VoidCallback onShutter;
   final VoidCallback onGallery;
+  final bool macroOn;
+  final VoidCallback onToggleMacro;
 
-  const _BottomBar({required this.onShutter, required this.onGallery});
+  const _BottomBar({
+    required this.onShutter,
+    required this.onGallery,
+    required this.macroOn,
+    required this.onToggleMacro,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -277,7 +302,8 @@ class _BottomBar extends StatelessWidget {
               _SideButton(
                 icon: Icons.center_focus_strong_rounded,
                 label: 'Makro',
-                onTap: () {},
+                active: macroOn,
+                onTap: onToggleMacro,
               ),
               _Shutter(onTap: onShutter),
               _SideButton(
@@ -305,11 +331,13 @@ class _BottomBar extends StatelessWidget {
 class _SideButton extends StatelessWidget {
   final IconData icon;
   final String label;
+  final bool active;
   final VoidCallback onTap;
 
   const _SideButton({
     required this.icon,
     required this.label,
+    this.active = false,
     required this.onTap,
   });
 
@@ -324,19 +352,23 @@ class _SideButton extends StatelessWidget {
             width: AppSpacing.tapTargetMin,
             height: AppSpacing.tapTargetMin,
             decoration: BoxDecoration(
-              color: AppColors.surfaceInset,
+              color: active ? AppColors.primary600 : AppColors.surfaceInset,
               borderRadius: BorderRadius.circular(14),
               boxShadow: AppShadows.raisedSm,
             ),
-            child: Icon(icon, size: 20, color: AppColors.textSecondary),
+            child: Icon(
+              icon,
+              size: 20,
+              color: active ? Colors.white : AppColors.textSecondary,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: AppColors.textSecondary,
+              fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+              color: active ? AppColors.primary800 : AppColors.textSecondary,
             ),
           ),
         ],

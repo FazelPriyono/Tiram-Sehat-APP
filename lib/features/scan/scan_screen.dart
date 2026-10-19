@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../core/theme/tokens.dart';
 import '../../core/components/app_bottom_sheet.dart';
 import '../../mock/mock_data.dart';
-import 'widgets/camera_preview_placeholder.dart';
+import 'widgets/app_camera_preview.dart';
 import 'widgets/scan_viewfinder_screen.dart';
 import 'widgets/scan_result_sheet.dart';
 
@@ -23,37 +26,256 @@ class ScanScreen extends StatefulWidget {
   State<ScanScreen> createState() => _ScanScreenState();
 }
 
-class _ScanScreenState extends State<ScanScreen> {
-  ScanPhase _phase = ScanPhase.viewfinder;
+class _ScanScreenState extends State<ScanScreen> with WidgetsBindingObserver {
+  CameraController? _controller;
+  List<CameraDescription> _cameras = const [];
+  bool _isInitializing = true;
+  String? _cameraError;
   bool _flashOn = false;
+  bool _macroOn = false;
 
-  void _capture() {
-    setState(() => _phase = ScanPhase.analyzing);
+  Uint8List? _capturedBytes;
+
+  ScanPhase _phase = ScanPhase.viewfinder;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _initializeCamera();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final cameraController = _controller;
+
+    // Abaikan jika controller belum siap
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      cameraController.dispose();
+      _controller = null;
+    } else if (state == AppLifecycleState.resumed) {
+      _initializeCamera();
+    }
+  }
+
+  Future<void> _initializeCamera() async {
+    setState(() {
+      _isInitializing = true;
+      _cameraError = null;
+    });
+
+    try {
+      if (_cameras.isEmpty) {
+        _cameras = await availableCameras();
+      }
+
+      if (_cameras.isEmpty) {
+        if (mounted) {
+          setState(() {
+            _isInitializing = false;
+            _cameraError =
+                'Tidak ada perangkat kamera yang terdeteksi di perangkat ini.';
+          });
+        }
+        return;
+      }
+
+      // Prioritaskan kamera belakang untuk pemindaian baglog jamur
+      final selectedCamera = _cameras.firstWhere(
+        (cam) => cam.lensDirection == CameraLensDirection.back,
+        orElse: () => _cameras.first,
+      );
+
+      final controller = CameraController(
+        selectedCamera,
+        ResolutionPreset.high,
+        enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.jpeg,
+      );
+
+      _controller = controller;
+
+      await controller.initialize();
+
+      if (mounted) {
+        setState(() {
+          _isInitializing = false;
+          _flashOn = false;
+          _macroOn = false;
+        });
+      }
+    } on CameraException catch (e) {
+      debugPrint('CameraException [${e.code}]: ${e.description}');
+      if (mounted) {
+        setState(() {
+          _isInitializing = false;
+          _cameraError = _mapCameraErrorCode(e.code, e.description);
+        });
+      }
+    } catch (e) {
+      debugPrint('Error initializing camera: $e');
+      if (mounted) {
+        setState(() {
+          _isInitializing = false;
+          _cameraError = 'Terjadi kendala saat mengakses kamera perangkat ($e).';
+        });
+      }
+    }
+  }
+
+  String _mapCameraErrorCode(String code, String? description) {
+    switch (code) {
+      case 'CameraAccessDenied':
+      case 'CameraAccessDeniedWithoutPrompt':
+        return 'Izin akses kamera belum diberikan. Harap aktifkan izin kamera di Pengaturan perangkat Anda.';
+      case 'CameraAccessRestricted':
+        return 'Akses kamera dibatasi oleh kebijakan keamanan perangkat.';
+      default:
+        return description ??
+            'Kamera belum dapat digunakan ($code). Pastikan kamera tidak sedang dipakai aplikasi lain.';
+    }
+  }
+
+  Future<void> _toggleFlash() async {
+    final nextFlash = !_flashOn;
+    if (_controller != null && _controller!.value.isInitialized) {
+      try {
+        await _controller!.setFlashMode(
+          nextFlash ? FlashMode.torch : FlashMode.off,
+        );
+        if (mounted) {
+          setState(() => _flashOn = nextFlash);
+        }
+      } catch (e) {
+        debugPrint('Flash mode toggle error: $e');
+      }
+    } else {
+      setState(() => _flashOn = nextFlash);
+    }
+  }
+
+  Future<void> _toggleMacro() async {
+    final nextMacro = !_macroOn;
+    if (_controller != null && _controller!.value.isInitialized) {
+      try {
+        final minZoom = await _controller!.getMinZoomLevel();
+        final maxZoom = await _controller!.getMaxZoomLevel();
+        final targetZoom =
+            nextMacro ? (2.0).clamp(minZoom, maxZoom) : minZoom;
+        await _controller!.setZoomLevel(targetZoom);
+        if (mounted) {
+          setState(() => _macroOn = nextMacro);
+        }
+      } catch (e) {
+        debugPrint('Macro zoom toggle error: $e');
+      }
+    } else {
+      setState(() => _macroOn = nextMacro);
+    }
+  }
+
+  Future<void> _capture() async {
+    if (_controller != null && _controller!.value.isInitialized) {
+      try {
+        final xFile = await _controller!.takePicture();
+        final bytes = await xFile.readAsBytes();
+        if (mounted) {
+          setState(() {
+            _capturedBytes = bytes;
+            _phase = ScanPhase.analyzing;
+          });
+        }
+      } catch (e) {
+        debugPrint('Take picture error: $e');
+        if (mounted) {
+          setState(() => _phase = ScanPhase.analyzing);
+        }
+      }
+    } else {
+      setState(() => _phase = ScanPhase.analyzing);
+    }
+
+    _startAnalysisTimer();
+  }
+
+  Future<void> _pickFromGallery() async {
+    try {
+      final picker = ImagePicker();
+      final image = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1920,
+        maxHeight: 1920,
+      );
+      if (image != null) {
+        final bytes = await image.readAsBytes();
+        if (mounted) {
+          setState(() {
+            _capturedBytes = bytes;
+            _phase = ScanPhase.analyzing;
+          });
+          _startAnalysisTimer();
+        }
+      }
+    } catch (e) {
+      debugPrint('Pick image gallery error: $e');
+    }
+  }
+
+  void _startAnalysisTimer() {
     Future.delayed(const Duration(milliseconds: 900), () {
       if (!mounted || _phase != ScanPhase.analyzing) return;
       setState(() => _phase = ScanPhase.result);
     });
   }
 
-  void _reset() => setState(() => _phase = ScanPhase.viewfinder);
-
-  void _toggleFlash() => setState(() => _flashOn = !_flashOn);
+  void _reset() {
+    setState(() {
+      _capturedBytes = null;
+      _phase = ScanPhase.viewfinder;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final cameraPreviewWidget = AppCameraPreview(
+      controller: _controller,
+      isInitialized: _controller != null && _controller!.value.isInitialized,
+      isLoading: _isInitializing,
+      errorMessage: _cameraError,
+      capturedBytes: _capturedBytes,
+      onRetry: _initializeCamera,
+      onPickGallery: _pickFromGallery,
+    );
+
     switch (_phase) {
       case ScanPhase.viewfinder:
         return ScanViewfinderScreen(
           onBack: widget.onBack,
           onShutter: _capture,
-          onGallery: _capture,
+          onGallery: _pickFromGallery,
           flashOn: _flashOn,
           onToggleFlash: _toggleFlash,
+          macroOn: _macroOn,
+          onToggleMacro: _toggleMacro,
+          cameraPreview: cameraPreviewWidget,
         );
       case ScanPhase.analyzing:
-        return const _AnalyzingOverlay();
+        return _AnalyzingOverlay(cameraPreview: cameraPreviewWidget);
       case ScanPhase.result:
         return _ResultView(
+          cameraPreview: cameraPreviewWidget,
           flashOn: _flashOn,
           onToggleFlash: _toggleFlash,
           onClose: _reset,
@@ -65,14 +287,16 @@ class _ScanScreenState extends State<ScanScreen> {
 }
 
 class _AnalyzingOverlay extends StatelessWidget {
-  const _AnalyzingOverlay();
+  final Widget cameraPreview;
+
+  const _AnalyzingOverlay({required this.cameraPreview});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.expand,
       children: [
-        const CameraPreviewPlaceholder(),
+        cameraPreview,
         Container(
           color: Colors.black.withValues(alpha: 0.45),
           child: Center(
@@ -102,6 +326,7 @@ class _AnalyzingOverlay extends StatelessWidget {
 }
 
 class _ResultView extends StatelessWidget {
+  final Widget cameraPreview;
   final bool flashOn;
   final VoidCallback onToggleFlash;
   final VoidCallback onClose;
@@ -109,6 +334,7 @@ class _ResultView extends StatelessWidget {
   final VoidCallback onSaveToHistory;
 
   const _ResultView({
+    required this.cameraPreview,
     required this.flashOn,
     required this.onToggleFlash,
     required this.onClose,
@@ -123,7 +349,7 @@ class _ResultView extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        const CameraPreviewPlaceholder(),
+        cameraPreview,
         SafeArea(
           child: Column(
             children: [

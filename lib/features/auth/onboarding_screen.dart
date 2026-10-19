@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/components/action_button.dart';
-import '../../core/components/info_note.dart';
 import '../../core/components/neu_surface.dart';
 import '../../core/theme/tokens.dart';
 import 'login_screen.dart';
